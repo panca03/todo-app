@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -14,32 +15,19 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasApiTokens, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'avatar',
+        'timezone',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -48,13 +36,60 @@ class User extends Authenticatable
         ];
     }
 
+    // ---------------------------------------------------------------------
+    // Relationships
+    // ---------------------------------------------------------------------
+
     /**
-     * Get all todos that belong to this user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * Workspaces this user owns.
      */
-    public function todos()
+    public function ownedWorkspaces(): HasMany
     {
-        return $this->hasMany(Todo::class);
+        return $this->hasMany(Workspace::class, 'owner_id');
+    }
+
+    /**
+     * Workspaces this user belongs to (via workspace_members pivot).
+     */
+    public function workspaces(): BelongsToMany
+    {
+        return $this->belongsToMany(Workspace::class, 'workspace_members')
+            ->withPivot(['role', 'joined_at'])
+            ->withTimestamps();
+    }
+
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(WorkspaceMember::class);
+    }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class, 'created_by');
+    }
+
+    public function createdTasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'created_by');
+    }
+
+    /**
+     * Tasks assigned to this user.
+     */
+    public function assignedTasks(): BelongsToMany
+    {
+        return $this->belongsToMany(Task::class, 'task_assignees')
+            ->withPivot('assigned_by')
+            ->withTimestamps();
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(TaskComment::class);
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
     }
 }
