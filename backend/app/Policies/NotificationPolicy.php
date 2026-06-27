@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\Notification;
@@ -9,16 +11,16 @@ class NotificationPolicy
 {
     public function view(User $user, Notification $notification): bool
     {
-        return $notification->user_id === $user->id;
+        return $user->id === $notification->user_id;
     }
 
     public function update(User $user, Notification $notification): bool
     {
-        return $this->view($user, $notification);
+        return $user->id === $notification->user_id;
     }
 
     public function delete(User $user, Notification $notification): bool
     {
-        return $this->view($user, $notification);
+        return $user->id === $notification->user_id;
     }
 }

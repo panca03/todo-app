@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,16 +17,17 @@ class Notification extends Model
         'type',
         'title',
         'message',
-        'data',
         'is_read',
         'read_at',
     ];
 
-    protected $casts = [
-        'data' => 'array',
-        'is_read' => 'boolean',
-        'read_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_read' => 'boolean',
+            'read_at' => 'datetime',
+        ];
+    }
 
     public function user(): BelongsTo
     {
@@ -33,11 +36,9 @@ class Notification extends Model
 
     public function markAsRead(): void
     {
-        if (! $this->is_read) {
-            $this->update([
-                'is_read' => true,
-                'read_at' => now(),
-            ]);
-        }
+        $this->update([
+            'is_read' => true,
+            'read_at' => now(),
+        ]);
     }
 }

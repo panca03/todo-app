@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -14,10 +16,9 @@ class NotificationResource extends JsonResource
             'type' => $this->type,
             'title' => $this->title,
             'message' => $this->message,
-            'data' => $this->data,
             'is_read' => $this->is_read,
-            'read_at' => $this->read_at?->toDateTimeString(),
-            'created_at' => $this->created_at?->toDateTimeString(),
+            'read_at' => $this->read_at,
+            'created_at' => $this->created_at,
         ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -11,23 +13,15 @@ class TaskResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'project_id' => $this->project_id,
-            'created_by' => $this->created_by,
             'title' => $this->title,
             'description' => $this->description,
-            'status' => $this->status,
+            'due_date' => $this->due_date,
             'priority' => $this->priority,
-            'start_date' => $this->start_date?->format('Y-m-d'),
-            'due_date' => $this->due_date?->format('Y-m-d'),
-            'completed_at' => $this->completed_at?->toDateTimeString(),
-            'position' => $this->position,
-
-            'assignees' => UserSummaryResource::collection($this->whenLoaded('assignees')),
-            'tags' => TagResource::collection($this->whenLoaded('tags')),
-            'subtasks' => SubtaskResource::collection($this->whenLoaded('subtasks')),
-
-            'created_at' => $this->created_at?->toDateTimeString(),
-            'updated_at' => $this->updated_at?->toDateTimeString(),
+            'status' => $this->status,
+            'completed_at' => $this->completed_at,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }

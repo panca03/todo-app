@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------
+ * FlowTask theme — Notion / Things feel
+ * Warm off-whites, soft warm grays, gentle shadows, generous radii.
+ * Tailwind v4 auto-generates utilities from these @theme tokens, so
+ * `bg-bg`, `text-text`, `border-border`, `bg-accent` all just work.
+ * ------------------------------------------------------------------- */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Surfaces - Dark Mode */
+  --color-bg: #fbfbfa;
+  --color-bg-dark: #0a0a0a;
+  --color-surface: #ffffff;
+  --color-surface-dark: #161616;
+  --color-surface-2: #f5f5f4;
+  --color-surface-2-dark: #1e1e1e;
+  --color-surface-3: #efeeec;
+  --color-surface-3-dark: #252525;
+
+  /* Text */
+  --color-text: #37352f; /* primary — Notion ink */
+  --color-text-muted: #787774; /* secondary */
+  --color-text-subtle: #9b9a97; /* hints, placeholders, disabled labels */
+  --color-text-inverse: #ffffff;
+
+  /* Border / outline */
+  --color-border: #ebebea; /* hairline */
+  --color-border-strong: #d3d3d1;
+  --color-focus-ring: #d97757; /* accent ring */
+
+  /* Accent (warm terracotta) — calm, friendly, distinctive */
+  --color-accent: #d97757;
+  --color-accent-hover: #c4674a;
+  --color-accent-soft: #faeee5;
+  --color-accent-fg: #ffffff;
+
+  /* Semantic — desaturated, harmonious */
+  --color-success: #4d9b6c;
+  --color-success-soft: #e8f1ec;
+  --color-warning: #c08a2a;
+  --color-warning-soft: #f8efd9;
+  --color-danger: #c4503f;
+  --color-danger-soft: #f5e1dd;
+  --color-info: #3a7ca5;
+  --color-info-soft: #e0ebf3;
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+
+  /* Shadows — soft, layered */
+  --shadow-sm: 0 1px 2px rgba(15, 15, 15, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 15, 15, 0.06), 0 1px 2px rgba(15, 15, 15, 0.04);
+  --shadow-lg: 0 12px 32px rgba(15, 15, 15, 0.1), 0 2px 6px rgba(15, 15, 15, 0.05);
+  --shadow-focus: 0 0 0 3px rgba(217, 119, 87, 0.22);
+}
+
+/* ---------------------------------------------------------------------
+ * Base body + a few global utilities.
+ * ------------------------------------------------------------------- */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+/* Scrollbar (subtle) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 999px;
+  border: 2px solid var(--color-bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-subtle);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Selection */
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+/* Focus ring (for any focusable element not handled by a component) */
+:where(button, a, input, textarea, select, [tabindex]):focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+  border-radius: var(--radius-sm);
+}
+
+/* ---------------------------------------------------------------------
+ * Motion
+ * ------------------------------------------------------------------- */
+@keyframes ft-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+.anim-fade-in {
+  animation: ft-fade-in 0.18s ease-out both;
+}
+
+@keyframes ft-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.anim-scale-in {
+  animation: ft-scale-in 0.16s ease-out both;
+}
+
+/* Spin animation (Tailwind animate-spin) */
+.anim-spin {
+  animation: ft-spin 0.7s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes ft-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ft-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.anim-slide-up {
+  animation: ft-slide-up 0.25s ease-out both;
+}
+
+/* Skeleton pulse */
+.animate-pulse {
+  animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

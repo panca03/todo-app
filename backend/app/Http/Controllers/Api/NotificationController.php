@@ -1,82 +1,46 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponse;
-use App\Http\Controllers\Controller;
 use App\Http\Resources\NotificationResource;
-use App\Models\Notification;
 use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class NotificationController extends Controller
+class NotificationController
 {
-    public function __construct(private NotificationService $notificationService)
-    {
-    }
+    public function __construct(
+        protected NotificationService $notificationService
+    ) {}
 
     public function index(Request $request): JsonResponse
     {
-        $notifications = $this->notificationService->list($request->user(), [
-            'is_read' => $request->has('is_read')
-                ? filter_var($request->query('is_read'), FILTER_VALIDATE_BOOLEAN)
-                : null,
-            'type' => $request->query('type'),
-            'per_page' => $request->query('per_page', 20),
-        ]);
+        $notifications = $this->notificationService->listForUser($request->user());
 
-        return ApiResponse::success(
-            'Daftar notifikasi berhasil diambil.',
-            NotificationResource::collection($notifications),
-            200,
-            [
-                'pagination' => [
-                    'current_page' => $notifications->currentPage(),
-                    'last_page' => $notifications->lastPage(),
-                    'per_page' => $notifications->perPage(),
-                    'total' => $notifications->total(),
-                ],
-            ]
-        );
+        return ApiResponse::success('Notifications retrieved.', NotificationResource::collection($notifications));
     }
 
     public function unreadCount(Request $request): JsonResponse
     {
-        return ApiResponse::success(
-            'Jumlah notifikasi belum dibaca.',
-            ['unread_count' => $this->notificationService->unreadCount($request->user())]
-        );
+        $count = $this->notificationService->unreadCount($request->user());
+
+        return ApiResponse::success('Unread count retrieved.', ['unread_count' => $count]);
     }
 
-    public function markAsRead(Request $request, Notification $notification): JsonResponse
+    public function markAsRead(Request $request, int $id): JsonResponse
     {
-        $this->authorize('update', $notification);
+        $notification = $this->notificationService->markAsRead($request->user(), $id);
 
-        $updated = $this->notificationService->markAsRead($notification);
-
-        return ApiResponse::success(
-            'Notifikasi ditandai sebagai dibaca.',
-            new NotificationResource($updated)
-        );
+        return ApiResponse::success('Notification marked as read.', new NotificationResource($notification));
     }
 
     public function markAllAsRead(Request $request): JsonResponse
     {
-        $count = $this->notificationService->markAllAsRead($request->user());
+        $this->notificationService->markAllAsRead($request->user());
 
-        return ApiResponse::success(
-            'Semua notifikasi ditandai sebagai dibaca.',
-            ['updated_count' => $count]
-        );
-    }
-
-    public function destroy(Request $request, Notification $notification): JsonResponse
-    {
-        $this->authorize('delete', $notification);
-
-        $this->notificationService->delete($notification);
-
-        return ApiResponse::success('Notifikasi berhasil dihapus.');
+        return ApiResponse::success('All notifications marked as read.');
     }
 }
