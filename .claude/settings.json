@@ -1,9 +1,0 @@
-{
-  "enabledPlugins": {
-    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
-    "superpowers@claude-plugins-official": true,
-    "superpowers@superpowers-marketplace": true,
-    "ecc@ecc": true,
-    "claude-mem@thedotmack": true
-  }
-}
